@@ -123,10 +123,12 @@ class AIGRPCClientProxy:
 				raise NacosException(SERVER_ERROR,
 									 " Server return invalid response")
 		except NacosException as e:
-			if e.error_code == NOT_MODIFIED or e.error_code == NOT_FOUND:
-				raise
-			self.logger.error(
-				"failed to invoke nacos config server : " + str(e))
+			if e.error_code == NOT_FOUND:
+				self.logger.warning(
+					"failed to invoke nacos config server : " + str(e))
+			elif e.error_code != NOT_MODIFIED:
+				self.logger.error(
+					"failed to invoke nacos config server : " + str(e))
 			raise e
 		except Exception as e:
 			self.logger.error(
